@@ -8,6 +8,14 @@ export type SetPermissionDenied = React.Dispatch<React.SetStateAction<boolean>>;
 export interface CameraProps {
   facingMode?: FacingMode;
   aspectRatio?: AspectRatio;
+  constraints?: {
+    resizeMode?: {
+      exact: string
+    }
+    width?: number;
+    height?: number;
+    advanced?: any;
+  };
   numberOfCamerasCallback?(numberOfCameras: number): void;
   videoSourceDeviceId?: string | undefined;
   errorMessages: {

@@ -144,16 +144,28 @@ var initCameraStream = function (stream, setStream, currentFacingMode, videoSour
     var constraints = {
         audio: false,
         video: {
+            resizeMode: {
+                exact: "none"
+            },
             deviceId: videoSourceDeviceId ? { exact: videoSourceDeviceId } : undefined,
             facingMode: currentFacingMode,
-            width: { ideal: 1920 },
-            height: { ideal: 1920 },
+            width: { ideal: Math.floor(window.innerWidth * window.devicePixelRatio) || 1920 },
+            height: { ideal: Math.floor(window.innerHeight * window.devicePixelRatio) || 1920 },
+            advanced: [{
+                    "width": { "min": 1280, "max": 1280 }
+                }]
         },
     };
     if ((_b = (_a = navigator) === null || _a === void 0 ? void 0 : _a.mediaDevices) === null || _b === void 0 ? void 0 : _b.getUserMedia) {
         navigator.mediaDevices
             .getUserMedia(constraints)
             .then(function (stream) {
+            var track = stream.getVideoTracks()[0];
+            if (track) {
+                track.applyConstraints(constraints).then(function () {
+                    return console.log(JSON.stringify(track.getSettings()));
+                });
+            }
             setStream(handleSuccess(stream, setNumberOfCameras));
         })
             .catch(function (err) {
